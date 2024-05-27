@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int         @id @default(autoincrement())
+  userName  String
+  email     String      @unique
+  imageUrl  String      @default("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png")
+  password  String
+  role      Role        @default(client)
+  recipes   Recipes[]
+  favourite Favourite[]
+  rate      Rate[]
+}
+
+enum Role {
+  admin
+  client
+}
+
+model Recipes {
+  id          Int                 @id @default(autoincrement())
+  title       String
+  description String
+  createdAt   DateTime            @default(now())
+  User        User?               @relation(fields: [userId], references: [id])
+  userId      Int?
+  imageUrl String? 
+  favourite   Favourite[]
+  rate        Rate[]
+  categories  RecipesCategory[]
+  collections CollectionRecipes[]
+}
+
+model Favourite {
+  id Int @id @default(autoincrement())
+
+  Recipes   Recipes? @relation(fields: [recipesId], references: [id])
+  recipesId Int?
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+
+  @@unique([userId, recipesId])
+}
+
+model Rate {
+  id        Int      @id @default(autoincrement())
+  comment   String
+  Recipes   Recipes? @relation(fields: [recipesId], references: [id])
+  recipesId Int?
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+
+  @@unique([userId, recipesId])
+}
+
+model Category {
+  id          Int               @id @default(autoincrement())
+  title       String
+  imageUrl    String
+  collections RecipesCategory[]
+}
+
+model RecipesCategory {
+  id Int @id @default(autoincrement())
+
+  Category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+  Recipes    Recipes?  @relation(fields: [recipesId], references: [id])
+  recipesId  Int?
+
+  @@unique([recipesId, categoryId])
+}
+
+model Collection {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  imageUrl          String
+  collectionRecipes CollectionRecipes[]
+}
+
+model CollectionRecipes {
+  id Int @id @default(autoincrement())
+
+  Collection   Collection? @relation(fields: [collectionId], references: [id])
+  collectionId Int?
+  Recipes      Recipes?    @relation(fields: [recipesId], references: [id])
+  recipesId    Int?
+  @@unique([recipesId,collectionId])
+}
