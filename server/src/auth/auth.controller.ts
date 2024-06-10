@@ -1,9 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { users } from './../../prisma/data';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { ApiTags } from '@nestjs/swagger';
-@ApiTags("auth")
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { JwtModule } from '@nestjs/jwt';
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -18,6 +30,13 @@ export class AuthController {
     return this.authService.findAll();
   }
 
+  @Get("/getMe")
+  @ApiSecurity('apiKey')
+  getMe(@Request() req) {
+    return this.authService.getMe(
+      req.get('Authorization').replace('Bearer ', ''),
+    );
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.authService.findOne(+id);

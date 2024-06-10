@@ -11,6 +11,8 @@ async function bootstrap() {
     .setTitle('TasteBite')
     .setDescription('The TasteBite API description')
     .setVersion('0.1')
+    // .addApiKey({type:'apiKey',name:'Authorization',in:'header'},'apiKey')
+    .addApiKey({type:"apiKey",name:"Authorization",in:"header"},"apiKey")
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
