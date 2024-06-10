@@ -1,4 +1,3 @@
-import { users } from './../../prisma/data';
 import {
   Controller,
   Get,
@@ -7,14 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-  Request,
-  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { ApiSecurity, ApiTags } from '@nestjs/swagger';
-import { JwtModule } from '@nestjs/jwt';
+import { ApiTags } from '@nestjs/swagger';
+
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -30,13 +27,6 @@ export class AuthController {
     return this.authService.findAll();
   }
 
-  @Get("/getMe")
-  @ApiSecurity('apiKey')
-  getMe(@Request() req) {
-    return this.authService.getMe(
-      req.get('Authorization').replace('Bearer ', ''),
-    );
-  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.authService.findOne(+id);

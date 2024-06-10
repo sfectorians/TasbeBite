@@ -33,9 +33,7 @@ export class AuthService {
     return `This action returns all auth`;
   }
 
- async getMe(token:string){
-    return await this.jwt.decode(token)
-  }
+
 
   findOne(id: number) {
     return `This action returns a #${id} auth`;
