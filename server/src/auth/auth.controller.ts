@@ -7,6 +7,10 @@ import {
   Param,
   Delete,
   UseGuards,
+  Request,
+  UnauthorizedException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -19,15 +23,17 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('login')
   create(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.login(createAuthDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findMyInfo() {
-    return this.authService.findAll();
+  findMyInfo(@Request() req: any) {
+    console.log(req.user);
+    if (req.user.role === 'admin') return req.user;
+    else throw new HttpException("your role can't consume this api",HttpStatus.FORBIDDEN);
   }
 
   @Get(':id')
