@@ -29,6 +29,8 @@ export class AuthService {
     return token 
   }
 
+  // getMyInfo()
+
   findAll() {
     return `This action returns all auth`;
   }

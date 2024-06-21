@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -22,8 +24,9 @@ export class AuthController {
     return this.authService.login(createAuthDto);
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
+  findMyInfo() {
     return this.authService.findAll();
   }
 

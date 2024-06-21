@@ -8,7 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 import { UsersService } from 'src/users/users.service';
 import { JwtStrategy } from './jwt.strategy';
-export const secret = "sfectoria"
+export const secret = "sfectoria slupt your digital path"
 @Module({
   imports : [
     PassportModule,
